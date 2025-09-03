@@ -1,0 +1,32 @@
+{
+  "name": "api-client",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "utility",
+    "library",
+    "api"
+  ],
+  "author": "Mathieu Desjarlais",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "ofetch": "^1.4.1"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.20",
+    "typescript": "^4.0.0"
+  }
+}
