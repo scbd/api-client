@@ -10,10 +10,13 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "api-client": "github:scbd/api-client#api-base",
+    "api-client": "github:desmat/scbd-api-client",
     "lodash": "^4.17.21",
     "nuxt": "^4.1.0",
     "vue": "^3.5.20",
     "vue-router": "^4.5.1"
+  },
+  "peerDependencies": {
+    "api-client": "github:desmat/scbd-api-client"
   }
 }
