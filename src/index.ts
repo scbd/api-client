@@ -1,5 +1,5 @@
-import { ApiBase } from "./api-base"
-import { ThingApi } from "./things"
-import { GaiaApi } from "./gaia"
+import { ApiBase, ApiError } from "./api-base"
+import { ThingApi } from "./things" // just to test and get a sense of things
+import { GaiaApi } from "./gaia" // just to get test and get a sense of things
 
-export { ApiBase, ThingApi, GaiaApi }
+export { ApiBase, ApiError, ThingApi, GaiaApi }

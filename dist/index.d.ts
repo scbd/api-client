@@ -1,4 +1,4 @@
-import { ApiBase } from "./api-base";
+import { ApiBase, ApiError } from "./api-base";
 import { ThingApi } from "./things";
 import { GaiaApi } from "./gaia";
-export { ApiBase, ThingApi, GaiaApi };
+export { ApiBase, ApiError, ThingApi, GaiaApi };

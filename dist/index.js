@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GaiaApi = exports.ThingApi = exports.ApiBase = void 0;
+exports.GaiaApi = exports.ThingApi = exports.ApiError = exports.ApiBase = void 0;
 const api_base_1 = require("./api-base");
 Object.defineProperty(exports, "ApiBase", { enumerable: true, get: function () { return api_base_1.ApiBase; } });
+Object.defineProperty(exports, "ApiError", { enumerable: true, get: function () { return api_base_1.ApiError; } });
 const things_1 = require("./things");
 Object.defineProperty(exports, "ThingApi", { enumerable: true, get: function () { return things_1.ThingApi; } });
 const gaia_1 = require("./gaia");
