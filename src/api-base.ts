@@ -29,6 +29,7 @@ const defaultErrorHandler = ({ request, options, response, error }: any) => {
 }
 
 const defaultInterceptors = {
+  // TODO: this is speculative, need to clarify 
   onResponse({ request, options, response }: any) {
     const contentType = response.headers.get("content-type");
     
