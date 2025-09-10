@@ -19,14 +19,14 @@ async function testThing() {
 }
 
 async function testErrors() {
-  console.log("test", new ApiError({}));
-  console.log("test forbidden", ApiError.forbidden());
-  console.log("test badRequest", ApiError.badRequest());
-  console.log("test getStatusCode", ApiError.getStatusCode(ApiError.forbidden()));
-  console.log("test isBadRequest", ApiError.isBadRequest(ApiError.badRequest()));
-  console.log("test isUnauthorized", ApiError.isUnauthorized(ApiError.unauthorized()));
-  console.log("test isForbidden", ApiError.isForbidden(ApiError.forbidden()));
-  console.log("test isNotFound", ApiError.isNotFound(ApiError.notFound()));
+  // console.log("test", new ApiError({}));
+  // console.log("test forbidden", ApiError.forbidden());
+  // console.log("test badRequest", ApiError.badRequest());
+
+  // console.log("test isBadRequest", ApiError.isBadRequest(ApiError.badRequest()));
+  // console.log("test isUnauthorized", ApiError.isUnauthorized(ApiError.unauthorized()));
+  // console.log("test isForbidden", ApiError.isForbidden(ApiError.forbidden()));
+  // console.log("test isNotFound", ApiError.isNotFound(ApiError.notFound()));
 
   console.log("test getStatusCode badRequest (expect 400)", ApiError.getStatusCode(new ApiError({ code: "badRequest" })));
   console.log("test getStatusCode mandatory (expect 400)", ApiError.getStatusCode(new ApiError({ code: "mandatory" })));
@@ -41,7 +41,12 @@ async function testErrors() {
   console.log("test getStatusCode gibberish (expect 500)", ApiError.getStatusCode(new ApiError({ code: "gibberish" })));
 
   console.log("test statusCode 404 (expect notFound)", new ApiError({ statusCode: 404 }).code);
-  console.log("test statusCode 404 (expect internalServerError)", new ApiError({ statusCode: 500 }).code);
+  console.log("test statusCode 418 (expect imATeapot)", new ApiError({ statusCode: 418 }).code);
+  console.log("test statusCode 500 (expect internalServerError)", new ApiError({ statusCode: 500 }).code);
+  console.log("test statusCode 123 (expect internalServerError)", new ApiError({ statusCode: 123 }).code);
+
+  console.log("test code Not Found (expect statusCode 404)", new ApiError({ code: "Not Found" }).statusCode);
+  console.log("test code Method Not Allowed (expect statusCode 405)", new ApiError({ code: "Method Not Allowed" }).statusCode);
 }
 
 // testThing();

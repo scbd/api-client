@@ -1,17 +1,11 @@
-import { StatusCodes, getReasonPhrase } from 'http-status-codes';
+import { capitalCase, camelCase } from 'change-case'
+import { StatusCodes, getReasonPhrase, getStatusCode, getStatusText } from 'http-status-codes';
 import startCase from 'lodash-es/startCase';
 import type { FetchContext, FetchResponse } from 'ofetch';
 
 const customStatusCodes = [
-  { code: 'badRequest', statusCode: StatusCodes.BAD_REQUEST },
   { code: 'mandatory', statusCode: StatusCodes.BAD_REQUEST },
   { code: 'invalidParameter', statusCode: StatusCodes.BAD_REQUEST },
-  { code: 'unauthorized', statusCode: StatusCodes.UNAUTHORIZED },
-  { code: 'forbidden', statusCode: StatusCodes.FORBIDDEN },
-  { code: 'notFound', statusCode: StatusCodes.NOT_FOUND },
-  { code: 'internalServerError', statusCode: StatusCodes.INTERNAL_SERVER_ERROR },
-  { code: 'notImplemented', statusCode: StatusCodes.NOT_IMPLEMENTED },
-  { code: 'serviceUnavailable', statusCode: StatusCodes.SERVICE_UNAVAILABLE },
 ];
 
 type ApiErrorParams = { statusCode?: number, code?: string, field?: string, message?: string, cause?: any };
@@ -39,7 +33,7 @@ export class ApiError extends Error {
     this.code = _code;
     this.statusCode = _statusCode;
     this.cause = _cause;
-    this.message = message || getReasonPhrase(_statusCode) || startCase(_code);
+    this.message = message || getDefaultMessage(_statusCode) || startCase(_code);
     this.fields = field && [field] || []
   }
 
@@ -170,11 +164,27 @@ export class ApiError extends Error {
 }
 
 function getDefaultStatusCode(code: string) {
-  const entry = customStatusCodes.find((o) => o.code === code);
-  return entry ? entry.statusCode : undefined;
+  try {
+    const entry = customStatusCodes.find((o) => o.code === code);
+    return entry ? entry.statusCode : getStatusCode(capitalCase(code));
+  } catch (error) {
+    return undefined;
+  }
 }
 
 function getDefaultCode(statusCode: number) {
-  const entry = customStatusCodes.find((o) => o.statusCode === statusCode);
-  return entry ? entry.code : undefined;
+  try {
+    const entry = customStatusCodes.find((o) => o.statusCode === statusCode);
+    return entry ? entry.code : camelCase(getStatusText(statusCode));
+  } catch (error) {
+    return undefined;
+  } 
+}
+
+function getDefaultMessage(statusCode: number) {
+  try {
+    return getReasonPhrase(statusCode);
+  } catch (error) {
+    return undefined;
+  }
 }
