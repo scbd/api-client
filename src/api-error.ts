@@ -1,16 +1,17 @@
+import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 import startCase from 'lodash-es/startCase';
-import type { FetchContext, FetchResponse } from "ofetch";
+import type { FetchContext, FetchResponse } from 'ofetch';
 
-const httpStatusCodes = [
-  { code: 'badRequest', statusCode: 400 },
-  { code: 'mandatory', statusCode: 400 },
-  { code: 'invalidParameter', statusCode: 400 },
-  { code: 'unauthorized', statusCode: 401 },
-  { code: 'forbidden', statusCode: 403 },
-  { code: 'notFound', statusCode: 404 },
-  { code: 'internalServerError', statusCode: 500 },
-  { code: 'notImplemented', statusCode: 501 },
-  { code: 'serviceUnavailable', statusCode: 503 },
+const customStatusCodes = [
+  { code: 'badRequest', statusCode: StatusCodes.BAD_REQUEST },
+  { code: 'mandatory', statusCode: StatusCodes.BAD_REQUEST },
+  { code: 'invalidParameter', statusCode: StatusCodes.BAD_REQUEST },
+  { code: 'unauthorized', statusCode: StatusCodes.UNAUTHORIZED },
+  { code: 'forbidden', statusCode: StatusCodes.FORBIDDEN },
+  { code: 'notFound', statusCode: StatusCodes.NOT_FOUND },
+  { code: 'internalServerError', statusCode: StatusCodes.INTERNAL_SERVER_ERROR },
+  { code: 'notImplemented', statusCode: StatusCodes.NOT_IMPLEMENTED },
+  { code: 'serviceUnavailable', statusCode: StatusCodes.SERVICE_UNAVAILABLE },
 ];
 
 type ApiErrorParams = { statusCode?: number, code?: string, field?: string, message?: string, cause?: any };
@@ -30,7 +31,7 @@ export class ApiError extends Error {
     if (_code) _statusCode = _statusCode || getDefaultStatusCode(_code);
     if (_statusCode) _code = _code || getDefaultCode(_statusCode);
 
-    _statusCode = _statusCode || 500;
+    _statusCode = _statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
     _code = _code || 'internalServerError';
 
     super(_code); // TODO why does doing this swallow this.message?
@@ -38,7 +39,7 @@ export class ApiError extends Error {
     this.code = _code;
     this.statusCode = _statusCode;
     this.cause = _cause;
-    this.message = message || startCase(_code);
+    this.message = message || getReasonPhrase(_statusCode) || startCase(_code);
     this.fields = field && [field] || []
   }
 
@@ -76,16 +77,25 @@ export class ApiError extends Error {
   static forbidden(message?: string, { ...params }: ApiErrorParams = {}) {
     return new ApiError({
       ...params,
-      statusCode: 403,
+      statusCode: StatusCodes.FORBIDDEN,
       code: 'forbidden',
       message: message || 'Operation is not allowed',
+    });
+  }
+
+  static unauthorized(message?: string, { ...params }: ApiErrorParams = {}) {
+    return new ApiError({
+      ...params,
+      statusCode: StatusCodes.UNAUTHORIZED,
+      code: 'unauthorized',
+      message: message || 'Unauthorized',
     });
   }
 
   static notFound(message?: string, { ...params }: ApiErrorParams = {}) {
     return new ApiError({
       ...params,
-      statusCode: 404,
+      statusCode: StatusCodes.NOT_FOUND,
       code: 'notFound',
       message: message || 'Not found',
     });
@@ -94,7 +104,7 @@ export class ApiError extends Error {
   static invalidParameter(field: string, message?: string, { ...params }: ApiErrorParams = {}) {
     return new ApiError({
       ...params,
-      statusCode: 400,
+      statusCode: StatusCodes.BAD_REQUEST,
       code: 'invalidParameter',
       message: message || 'Invalid parameter value',
       field,
@@ -104,7 +114,7 @@ export class ApiError extends Error {
   static mandatory(field: string, message?: string, { ...params }: ApiErrorParams = {}) {
     return new ApiError({
       ...params,
-      statusCode: 400,
+      statusCode: StatusCodes.BAD_REQUEST,
       code: 'mandatory',
       message: message || 'Value is mandatory',
       field,
@@ -114,7 +124,7 @@ export class ApiError extends Error {
   static badRequest(message?: string, { code, ...params }: ApiErrorParams = {}) {
     return new ApiError({
       ...params,
-      statusCode: 400,
+      statusCode: StatusCodes.BAD_REQUEST,
       code: code || 'badRequest',
       message: message || 'Bad Request',
     });
@@ -123,7 +133,7 @@ export class ApiError extends Error {
   static internalServerError(message?: string, { ...params }: ApiErrorParams = {}) {
     return new ApiError({
       ...params,
-      statusCode: 500,
+      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
       code: 'internalServerError',
       message: message || 'Internal Server Error',
     });
@@ -132,7 +142,7 @@ export class ApiError extends Error {
   static serviceUnavailable(message?: string, { ...params }: ApiErrorParams = {}) {
     return new ApiError({
       ...params,
-      statusCode: 503,
+      statusCode: StatusCodes.SERVICE_UNAVAILABLE,
       code: 'serviceUnavailable',
       message: message || 'Service Unavailable',
     });
@@ -153,18 +163,18 @@ export class ApiError extends Error {
     return status;
   }
 
-  static isBadRequest = (error: any) => ApiError.getStatusCode(error) == 400;
-  static isUnauthorized = (error: any) => ApiError.getStatusCode(error) == 401;
-  static isForbidden = (error: any) => ApiError.getStatusCode(error) == 403;
-  static isNotFound = (error: any) => ApiError.getStatusCode(error) == 404;
+  static isBadRequest = (error: any) => ApiError.getStatusCode(error) == StatusCodes.BAD_REQUEST;
+  static isUnauthorized = (error: any) => ApiError.getStatusCode(error) == StatusCodes.UNAUTHORIZED;
+  static isForbidden = (error: any) => ApiError.getStatusCode(error) == StatusCodes.FORBIDDEN;
+  static isNotFound = (error: any) => ApiError.getStatusCode(error) == StatusCodes.NOT_FOUND;
 }
 
 function getDefaultStatusCode(code: string) {
-  const entry = httpStatusCodes.find((o) => o.code === code);
+  const entry = customStatusCodes.find((o) => o.code === code);
   return entry ? entry.statusCode : undefined;
 }
 
 function getDefaultCode(statusCode: number) {
-  const entry = httpStatusCodes.find((o) => o.statusCode === statusCode);
+  const entry = customStatusCodes.find((o) => o.statusCode === statusCode);
   return entry ? entry.code : undefined;
 }
