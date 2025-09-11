@@ -8,11 +8,11 @@ const customStatusCodes = [
   { code: 'invalidParameter', statusCode: StatusCodes.BAD_REQUEST },
 ];
 
-type ApiErrorParams = { statusCode?: number, code?: string, field?: string, message?: string, cause?: any };
+type ApiErrorParams = { statusCode?: number | null, code?: string | null, field?: string, message?: string, cause?: any };
 
 export class ApiError extends Error {
   code: string;
-  statusCode: number;
+  statusCode: number | null;
   cause: any;
   message: string;
   fields: string[];
@@ -167,7 +167,7 @@ function getDefaultStatusCode(code: string) {
     return entry ? entry.statusCode : getStatusCode(startCase(code));
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    return undefined;
+    return null;
   }
 }
 
@@ -177,7 +177,7 @@ function getDefaultCode(statusCode: number) {
     return entry ? entry.code : camelCase(getStatusText(statusCode));
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    return undefined;
+    return null;
   }
 }
 
@@ -186,6 +186,6 @@ function getDefaultMessage(statusCode: number) {
     return getReasonPhrase(statusCode);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    return undefined;
+    return null;
   }
 }

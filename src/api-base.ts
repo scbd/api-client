@@ -3,21 +3,10 @@ import type { $Fetch, FetchHooks, FetchContext, FetchResponse, ResponseType } fr
 import { ApiError } from './api-error'
 
 const defaultInterceptors = {
-  // TODO: this is speculative, need to clarify 
-  onResponse({ response }: FetchContext & { response: FetchResponse<any> }) {
-    const contentType = response.headers.get("content-type");
-    
-    if (contentType == "application/json") {
-      const { error, rest } = response._data;
-      if (error) {
-        throw new ApiError(rest);
-      }
-    }
-  },
   onResponseError: ApiError.handleError,
   onRequestError: ApiError.handleError,
 }
-  
+
 const concatInterceptors = (parentOpts?: FetchHooks<any, ResponseType>, opts?: any) => {
   return {
     onRequest: [parentOpts?.onRequest, opts?.onRequest].flat().filter(Boolean),
