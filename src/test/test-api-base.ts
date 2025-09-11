@@ -1,7 +1,7 @@
 import { ApiBase } from "../api-base"
 
-// hint: run as `node --watch ./dist/test/test-thing-api` 
-// with simultaneously `yarn tsc --watch` in another terminal
+// hint: run as `node --watch ./dist/test/test-api-base` 
+// with simultaneously `yarn build --watch` in another terminal
 
 // A simple API client implementation for testing
 export class ThingApi extends ApiBase {

@@ -1,7 +1,7 @@
 import { ApiError } from "../api-error"
 
 // hint: run as `node --watch ./dist/test/test-api-error` 
-// with simultaneously `yarn tsc --watch` in another terminal
+// with simultaneously `yarn build --watch` in another terminal
 
 async function testErrors() {
   // console.log("test", new ApiError({}));

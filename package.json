@@ -12,7 +12,9 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prepack": "tsc",
+    "prepare": "tsc"
   },
   "keywords": [
     "utility",
