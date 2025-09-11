@@ -7,10 +7,10 @@ export class ThingApi extends ApiBase {
     super({
       // test that handlers can be concatenated
       onRequest: [
-        ({ }) => {
+        () => {
           console.log("ThingApi onRequest")
         },
-        ({ }) => {
+        () => {
           console.log("ThingApi another onRequest")
         }
       ],

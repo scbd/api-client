@@ -20,7 +20,6 @@ export class ApiError extends Error {
   constructor({ statusCode, code, field, message, cause }: ApiErrorParams) {
     let _code = code;
     let _statusCode = statusCode;
-    let _cause = cause;
 
     if (_code) _statusCode = _statusCode || getDefaultStatusCode(_code);
     if (_statusCode) _code = _code || getDefaultCode(_statusCode);
@@ -32,7 +31,7 @@ export class ApiError extends Error {
 
     this.code = _code;
     this.statusCode = _statusCode;
-    this.cause = _cause;
+    this.cause = cause;
     this.message = message || getDefaultMessage(_statusCode) || startCase(_code);
     this.fields = field && [field] || []
   }
@@ -40,7 +39,6 @@ export class ApiError extends Error {
   static handleError = ({ response, error }: FetchContext & { response?: FetchResponse<any>, error?: ApiError }) => {
     let statusCode = response?.status;
     let code = response?.statusText || error?.code || error?.cause?.code;
-    let cause = error;
     let message = `${error}`;
     let field;
 
@@ -60,7 +58,7 @@ export class ApiError extends Error {
       message = 'UNKNOWN ERROR';
     }
 
-    throw new ApiError({ code, statusCode, field, message, cause });
+    throw new ApiError({ code, statusCode, field, message, cause: error });
   }
 
   toJSON() {
@@ -167,6 +165,7 @@ function getDefaultStatusCode(code: string) {
   try {
     const entry = customStatusCodes.find((o) => o.code === code);
     return entry ? entry.statusCode : getStatusCode(startCase(code));
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return undefined;
   }
@@ -176,14 +175,16 @@ function getDefaultCode(statusCode: number) {
   try {
     const entry = customStatusCodes.find((o) => o.statusCode === statusCode);
     return entry ? entry.code : camelCase(getStatusText(statusCode));
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return undefined;
-  } 
+  }
 }
 
 function getDefaultMessage(statusCode: number) {
   try {
     return getReasonPhrase(statusCode);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return undefined;
   }
