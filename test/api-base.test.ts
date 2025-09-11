@@ -1,8 +1,6 @@
 import { expect, test } from 'vitest'
 import { ApiBase } from "../src/api-base"
 
-// NOTE: test that providing interceptor in fetch call works properly and are not duplicated
-
 // A simple API client implementation for testing
 export class ThingApi extends ApiBase {
   constructor(opts: any) {
@@ -21,7 +19,7 @@ export class ThingApi extends ApiBase {
   }
 
   async getThings(page?: number) {
-    return this.fetch(`/api/things?page=${page || 0}`);
+    return this.fetch(`/api/things?page=${page || 0}`, { onRequest: () => console.log("ThingApi fetch onRequest")});
   }
 }
 
