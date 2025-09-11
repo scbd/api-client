@@ -1,5 +1,5 @@
-import { capitalCase, camelCase } from 'change-case'
 import { StatusCodes, getReasonPhrase, getStatusCode, getStatusText } from 'http-status-codes';
+import camelCase from 'lodash-es/camelCase';
 import startCase from 'lodash-es/startCase';
 import type { FetchContext, FetchResponse } from 'ofetch';
 
@@ -166,7 +166,7 @@ export class ApiError extends Error {
 function getDefaultStatusCode(code: string) {
   try {
     const entry = customStatusCodes.find((o) => o.code === code);
-    return entry ? entry.statusCode : getStatusCode(capitalCase(code));
+    return entry ? entry.statusCode : getStatusCode(startCase(code));
   } catch (error) {
     return undefined;
   }
