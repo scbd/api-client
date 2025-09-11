@@ -33,7 +33,7 @@ test('getStatusCode matches expected standard error code', () => {
 
 test('code matches provided statusCode', () => {
   expect(new ApiError({ statusCode: 404 }).code).toBe("notFound");
-  expect(new ApiError({ statusCode: 418 }).code).toBe("iMATeapot");
+  expect(new ApiError({ statusCode: 418 }).code).toBe("imATeapot");
   expect(new ApiError({ statusCode: 500 }).code).toBe("internalServerError");
   expect(new ApiError({ statusCode: 123 }).code).toBe("internalServerError");
 
