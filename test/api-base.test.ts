@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest'
-import { ApiBase } from "../src/api-base"
+import ApiBase from "../src/api-base"
+import { handleError } from "../src/api-error"
 
 // A simple API client implementation for testing
 export class ThingApi extends ApiBase {
@@ -10,10 +11,11 @@ export class ThingApi extends ApiBase {
         () => {
           console.log("ThingApi onRequest")
         },
-        () => {
+        () => { 
           console.log("ThingApi another onRequest")
         }
       ],
+      onResponseError: handleError, 
       ...opts,
     });
   }
@@ -23,15 +25,13 @@ export class ThingApi extends ApiBase {
   }
 }
 
-test('integration tests with an actual running api running', async () => {
+test('integration tests with an actual running api', async () => {
   // this is more of an integration test: 
   // make sure the api is running and remove the `return` below to run
   return;
 
   const baseURL = "http://localhost:3001";
   const thingApi = new ThingApi({ baseURL });
-
-  // expect(thingApi.getThings()).resolves;
 
   let ret = await thingApi.getThings();
   console.log("things", ret);
@@ -47,4 +47,10 @@ test('integration tests with an actual running api running', async () => {
   console.log("things", ret);
   expect(ret).toBeDefined();
   expect(ret.things.length).toBe(2);
+
+  // make sure the api returns this error then test:
+  // expect(thingApi.getThings()).rejects.toThrow("Don't do that!");
+
+  // make sure the api returns this error then test:
+  // expect(thingApi.getThings()).rejects.toThrow("Forbidden");
 });

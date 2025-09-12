@@ -1,34 +1,34 @@
 import { expect, test } from 'vitest'
-import { ApiError } from "../src/api-error"
+import ApiError, { forbidden, badRequest, isBadRequest, isUnauthorized, unauthorized, isForbidden, isNotFound, notFound, extractStatusCode,  } from "../src/api-error"
 
-test('Test constructors', () => {
+test('Test constructor and factory functions', () => {
   expect(new ApiError({}).statusCode).toBe(500);
   expect(new ApiError({ statusCode: 418 }).statusCode).toBe(418);
-  expect(ApiError.forbidden().code).toBe("forbidden");
-  expect(ApiError.badRequest().code).toBe("badRequest");
+  expect(forbidden().code).toBe("forbidden");
+  expect(badRequest().code).toBe("badRequest");
 });
 
 test('isBadRequest, isAuthorized, etc', () => {
-  expect(ApiError.isBadRequest(ApiError.badRequest())).toBeTruthy();
-  expect(ApiError.isUnauthorized(ApiError.unauthorized())).toBeTruthy();
-  expect(ApiError.isForbidden(ApiError.forbidden())).toBeTruthy();
-  expect(ApiError.isNotFound(ApiError.notFound())).toBeTruthy();
+  expect(isBadRequest(badRequest())).toBeTruthy();
+  expect(isUnauthorized(unauthorized())).toBeTruthy();
+  expect(isForbidden(forbidden())).toBeTruthy();
+  expect(isNotFound(notFound())).toBeTruthy();
 });
 
 test('getStatusCode matches expected custom error codes', () => {
-  expect(ApiError.getStatusCode(new ApiError({ code: "badRequest" }))).toBe(400);
-  expect(ApiError.getStatusCode(new ApiError({ code: "mandatory" }))).toBe(400);
-  expect(ApiError.getStatusCode(new ApiError({ code: "invalidParameter" }))).toBe(400);
+  expect(extractStatusCode(new ApiError({ code: "badRequest" }))).toBe(400);
+  expect(extractStatusCode(new ApiError({ code: "mandatory" }))).toBe(400);
+  expect(extractStatusCode(new ApiError({ code: "invalidParameter" }))).toBe(400);
 });
 
-test('getStatusCode matches expected standard error code', () => {
-  expect(ApiError.getStatusCode(new ApiError({ code: "unauthorized" }))).toBe(401);
-  expect(ApiError.getStatusCode(new ApiError({ code: "forbidden" }))).toBe(403);
-  expect(ApiError.getStatusCode(new ApiError({ code: "notFound" }))).toBe(404);
-  expect(ApiError.getStatusCode(new ApiError({ code: "internalServerError" }))).toBe(500);
-  expect(ApiError.getStatusCode(new ApiError({ code: "notImplemented" }))).toBe(501);
-  expect(ApiError.getStatusCode(new ApiError({ code: "serviceUnavailable" }))).toBe(503);
-  expect(ApiError.getStatusCode(new ApiError({ code: "gibberish" }))).toBe(500);
+test('extractStatusCode matches expected standard error code', () => {
+  expect(extractStatusCode(new ApiError({ code: "unauthorized" }))).toBe(401);
+  expect(extractStatusCode(new ApiError({ code: "forbidden" }))).toBe(403);
+  expect(extractStatusCode(new ApiError({ code: "notFound" }))).toBe(404);
+  expect(extractStatusCode(new ApiError({ code: "internalServerError" }))).toBe(500);
+  expect(extractStatusCode(new ApiError({ code: "notImplemented" }))).toBe(501);
+  expect(extractStatusCode(new ApiError({ code: "serviceUnavailable" }))).toBe(503);
+  expect(extractStatusCode(new ApiError({ code: "gibberish" }))).toBe(500);
 });
 
 test('code matches provided statusCode', () => {

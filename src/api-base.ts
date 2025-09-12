@@ -1,5 +1,5 @@
 import { ofetch } from "ofetch";
-import type { $Fetch, FetchHooks, ResponseType } from "ofetch";
+import type { $Fetch, FetchHooks, ResponseType, FetchOptions } from "ofetch";
 
 const concatInterceptors = (parentOpts?: FetchHooks<any, ResponseType>, opts?: any) => {
   return {
@@ -10,9 +10,9 @@ const concatInterceptors = (parentOpts?: FetchHooks<any, ResponseType>, opts?: a
   }
 }
 
-export class ApiBase {
+export default class ApiBase {
   #fetch: $Fetch;
-  #opts: any;
+  #opts: any // see ofetch's overly-complicated FetchOptions
 
   constructor(opts?: any) {
     // @ts-ignore
