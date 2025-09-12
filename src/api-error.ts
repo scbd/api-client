@@ -33,7 +33,7 @@ export default class ApiError extends Error {
     this.statusCode = _statusCode;
     this.cause = cause;
     this.message = message || getDefaultMessage(_statusCode) || startCase(_code);
-    this.fields = field && [field] || [];
+    this.fields = (field && [field]) || [];
   }
 
   toJSON() {
@@ -57,7 +57,8 @@ export function handleError({ response, error }: FetchContext & { response?: Fet
     code = data.code || code;
     field = data.field;
     message = data.message || data.Message;
-  } else if (contentType?.startsWith("text")) {
+  }
+  else if (contentType?.startsWith("text")) {
     message = response?._data;
   }
 
@@ -142,11 +143,11 @@ export function serviceUnavailable(message?: string, { ...params }: ApiErrorPara
   });
 }
 
-//= ===========================================================
+// = ===========================================================
 //
-// Extract SuperAgent / Ky / ApiError statusCode  
+// Extract SuperAgent / Ky / ApiError statusCode
 //
-//= ===========================================================
+// = ===========================================================
 export function extractStatusCode(error: any) {
   let status = error?.status || error?.statusCode || error?.response?.status || error?.response?.statusCode || error;
 
@@ -164,27 +165,29 @@ export const isNotFound = (error: any) => extractStatusCode(error) == StatusCode
 
 function getDefaultStatusCode(code: string) {
   try {
-    const entry = customStatusCodes.find((o) => o.code === code);
-    return entry ? entry.statusCode : getStatusCode(startCase(code));    
-  } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    const entry = customStatusCodes.find(o => o.code === code);
+    return entry ? entry.statusCode : getStatusCode(startCase(code));
+  }
+  catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
     return null;
   }
 }
 
 function getDefaultCode(statusCode: number) {
   try {
-    const entry = customStatusCodes.find((o) => o.statusCode === statusCode);
+    const entry = customStatusCodes.find(o => o.statusCode === statusCode);
     return entry ? entry.code : camelCase(getStatusText(statusCode));
-  } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
-    
+  }
+  catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
     return null;
   }
 }
 
 function getDefaultMessage(statusCode: number) {
   try {
-    return getReasonPhrase(statusCode);  
-  } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    return getReasonPhrase(statusCode);
+  }
+  catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
     return null;
   }
 }
