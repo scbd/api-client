@@ -1,2 +1,2 @@
-export { ApiBase } from "./api-base"
-export { ApiError } from "./api-error"
+export { default as ApiBase } from "./api-base"
+export { default as ApiError } from "./api-error"
