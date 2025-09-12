@@ -1,5 +1,5 @@
 import { ofetch } from "ofetch";
-import type { $Fetch, FetchHooks, ResponseType, FetchOptions } from "ofetch";
+import type { $Fetch, FetchHooks, ResponseType } from "ofetch";
 
 const concatInterceptors = (parentOpts?: FetchHooks<any, ResponseType>, opts?: any) => {
   return {
@@ -7,12 +7,12 @@ const concatInterceptors = (parentOpts?: FetchHooks<any, ResponseType>, opts?: a
     onRequestError: [parentOpts?.onRequestError, opts?.onRequestError].flat().filter(Boolean),
     onResponse: [parentOpts?.onResponse, opts?.onResponse].flat().filter(Boolean),
     onResponseError: [parentOpts?.onResponseError, opts?.onResponseError].flat().filter(Boolean),
-  }
-}
+  };
+};
 
 export default class ApiBase {
   #fetch: $Fetch;
-  #opts: any // see ofetch's overly-complicated FetchOptions
+  #opts: any; // see ofetch's overly-complicated FetchOptions
 
   constructor(opts?: any) {
     // @ts-ignore
@@ -26,6 +26,6 @@ export default class ApiBase {
     return this.#fetch(url, {
       ...opts,
       ...concatInterceptors(this.#opts, opts),
-    })
+    });
   }
 }

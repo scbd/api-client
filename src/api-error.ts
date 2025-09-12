@@ -1,11 +1,11 @@
-import { StatusCodes, getReasonPhrase, getStatusCode, getStatusText } from 'http-status-codes';
-import camelCase from 'lodash-es/camelCase';
-import startCase from 'lodash-es/startCase';
-import type { FetchContext, FetchResponse } from 'ofetch';
+import { StatusCodes, getReasonPhrase, getStatusCode, getStatusText } from "http-status-codes";
+import camelCase from "lodash-es/camelCase";
+import startCase from "lodash-es/startCase";
+import type { FetchContext, FetchResponse } from "ofetch";
 
 const customStatusCodes = [
-  { code: 'mandatory', statusCode: StatusCodes.BAD_REQUEST },
-  { code: 'invalidParameter', statusCode: StatusCodes.BAD_REQUEST },
+  { code: "mandatory", statusCode: StatusCodes.BAD_REQUEST },
+  { code: "invalidParameter", statusCode: StatusCodes.BAD_REQUEST },
 ];
 
 type ApiErrorParams = { statusCode?: number | null, code?: string | null, field?: string, message?: string, cause?: any };
@@ -25,7 +25,7 @@ export default class ApiError extends Error {
     if (_statusCode) _code = _code || getDefaultCode(_statusCode);
 
     _statusCode = _statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
-    _code = _code || 'internalServerError';
+    _code = _code || "internalServerError";
 
     super(_code); // TODO why does doing this swallow this.message?
 
@@ -33,10 +33,11 @@ export default class ApiError extends Error {
     this.statusCode = _statusCode;
     this.cause = cause;
     this.message = message || getDefaultMessage(_statusCode) || startCase(_code);
-    this.fields = field && [field] || []
+    this.fields = field && [field] || [];
   }
 
   toJSON() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { cause, ...withoutCause } = this;
     return withoutCause;
   }
@@ -71,8 +72,8 @@ export function forbidden(message?: string, { ...params }: ApiErrorParams = {}) 
   return new ApiError({
     ...params,
     statusCode: StatusCodes.FORBIDDEN,
-    code: 'forbidden',
-    message: message || 'Operation is not allowed',
+    code: "forbidden",
+    message: message || "Operation is not allowed",
   });
 }
 
@@ -80,8 +81,8 @@ export function unauthorized(message?: string, { ...params }: ApiErrorParams = {
   return new ApiError({
     ...params,
     statusCode: StatusCodes.UNAUTHORIZED,
-    code: 'unauthorized',
-    message: message || 'Unauthorized',
+    code: "unauthorized",
+    message: message || "Unauthorized",
   });
 }
 
@@ -89,8 +90,8 @@ export function notFound(message?: string, { ...params }: ApiErrorParams = {}) {
   return new ApiError({
     ...params,
     statusCode: StatusCodes.NOT_FOUND,
-    code: 'notFound',
-    message: message || 'Not found',
+    code: "notFound",
+    message: message || "Not found",
   });
 }
 
@@ -98,8 +99,8 @@ export function invalidParameter(field: string, message?: string, { ...params }:
   return new ApiError({
     ...params,
     statusCode: StatusCodes.BAD_REQUEST,
-    code: 'invalidParameter',
-    message: message || 'Invalid parameter value',
+    code: "invalidParameter",
+    message: message || "Invalid parameter value",
     field,
   });
 }
@@ -108,8 +109,8 @@ export function mandatory(field: string, message?: string, { ...params }: ApiErr
   return new ApiError({
     ...params,
     statusCode: StatusCodes.BAD_REQUEST,
-    code: 'mandatory',
-    message: message || 'Value is mandatory',
+    code: "mandatory",
+    message: message || "Value is mandatory",
     field,
   });
 }
@@ -118,8 +119,8 @@ export function badRequest(message?: string, { code, ...params }: ApiErrorParams
   return new ApiError({
     ...params,
     statusCode: StatusCodes.BAD_REQUEST,
-    code: code || 'badRequest',
-    message: message || 'Bad Request',
+    code: code || "badRequest",
+    message: message || "Bad Request",
   });
 }
 
@@ -127,8 +128,8 @@ export function internalServerError(message?: string, { ...params }: ApiErrorPar
   return new ApiError({
     ...params,
     statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-    code: 'internalServerError',
-    message: message || 'Internal Server Error',
+    code: "internalServerError",
+    message: message || "Internal Server Error",
   });
 }
 
@@ -136,8 +137,8 @@ export function serviceUnavailable(message?: string, { ...params }: ApiErrorPara
   return new ApiError({
     ...params,
     statusCode: StatusCodes.SERVICE_UNAVAILABLE,
-    code: 'serviceUnavailable',
-    message: message || 'Service Unavailable',
+    code: "serviceUnavailable",
+    message: message || "Service Unavailable",
   });
 }
 
@@ -151,7 +152,7 @@ export function extractStatusCode(error: any) {
 
   status = parseInt(status);
 
-  if (isNaN(status)) status = getDefaultStatusCode(status)
+  if (isNaN(status)) status = getDefaultStatusCode(status);
 
   return status;
 }
@@ -164,9 +165,8 @@ export const isNotFound = (error: any) => extractStatusCode(error) == StatusCode
 function getDefaultStatusCode(code: string) {
   try {
     const entry = customStatusCodes.find((o) => o.code === code);
-    return entry ? entry.statusCode : getStatusCode(startCase(code));
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (error) {
+    return entry ? entry.statusCode : getStatusCode(startCase(code));    
+  } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
     return null;
   }
 }
@@ -175,17 +175,16 @@ function getDefaultCode(statusCode: number) {
   try {
     const entry = customStatusCodes.find((o) => o.statusCode === statusCode);
     return entry ? entry.code : camelCase(getStatusText(statusCode));
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (error) {
+  } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    
     return null;
   }
 }
 
 function getDefaultMessage(statusCode: number) {
   try {
-    return getReasonPhrase(statusCode);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (error) {
+    return getReasonPhrase(statusCode);  
+  } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
     return null;
   }
 }
