@@ -1,11 +1,5 @@
 import { ofetch } from "ofetch";
-import type { $Fetch, FetchHooks, FetchContext, FetchResponse, ResponseType } from "ofetch";
-import { ApiError } from './api-error'
-
-const defaultInterceptors = {
-  onResponseError: ApiError.handleError,
-  onRequestError: ApiError.handleError,
-}
+import type { $Fetch, FetchHooks, ResponseType } from "ofetch";
 
 const concatInterceptors = (parentOpts?: FetchHooks<any, ResponseType>, opts?: any) => {
   return {
@@ -24,11 +18,7 @@ export class ApiBase {
     // @ts-ignore
     const myFetch = (globalThis.$fetch || ofetch) as $Fetch;
 
-    this.#opts = {
-      ...opts,
-      // @ts-ignore we use same handler for onRequestError and onResponseError but treat optional error and response keys
-      ...concatInterceptors(defaultInterceptors, opts),
-    };
+    this.#opts = opts;
     this.#fetch = myFetch.create(this.#opts);
   }
 
