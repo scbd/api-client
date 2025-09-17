@@ -1,18 +1,25 @@
 {
   "name": "api-client",
   "version": "0.0.1",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    }
   },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsup src/index.ts --dts --format esm,cjs --sourcemap",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepack": "tsc",
@@ -36,6 +43,7 @@
     "@stylistic/eslint-plugin": "^5.3.1",
     "@types/lodash-es": "^4.17.12",
     "eslint": "^9.35.0",
+    "tsup": "^8.5.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.43.0",
     "vitest": "^3.2.4"

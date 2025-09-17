@@ -1,6 +1,6 @@
 import { StatusCodes, getReasonPhrase, getStatusCode, getStatusText } from "http-status-codes";
-import camelCase from "lodash-es/camelCase";
-import startCase from "lodash-es/startCase";
+import camelCase from "lodash-es/camelCase.js";
+import startCase from "lodash-es/startCase.js";
 import type { FetchContext, FetchResponse } from "ofetch";
 
 const customStatusCodes = [
@@ -165,7 +165,7 @@ export const isNotFound = (error: any) => extractStatusCode(error) == StatusCode
 
 function getDefaultStatusCode(code: string) {
   try {
-    const entry = customStatusCodes.find(o => o.code === code);
+    const entry = customStatusCodes.find((o: any) => o.code === code);
     return entry ? entry.statusCode : getStatusCode(startCase(code));
   }
   catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -175,7 +175,7 @@ function getDefaultStatusCode(code: string) {
 
 function getDefaultCode(statusCode: number) {
   try {
-    const entry = customStatusCodes.find(o => o.statusCode === statusCode);
+    const entry = customStatusCodes.find((o: any) => o.statusCode === statusCode);
     return entry ? entry.code : camelCase(getStatusText(statusCode));
   }
   catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
