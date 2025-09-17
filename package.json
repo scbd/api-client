@@ -22,8 +22,8 @@
     "build": "tsup src/index.ts --dts --format esm,cjs --sourcemap",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepack": "tsc",
-    "prepare": "tsc",
+    "prepack": "tsup src/index.ts --dts --format esm,cjs --sourcemap",
+    "prepare": "tsup src/index.ts --dts --format esm,cjs --sourcemap",
     "test": "vitest"
   },
   "keywords": [
