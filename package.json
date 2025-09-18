@@ -4,13 +4,16 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
+      "types": "./dist/api-base.d.ts",
+      "import": "./dist/api-base.js",
+      "default": "./dist/api-base.js"
+    },
+    "./error": {
+      "types": "./dist/api-error.d.ts",
+      "import": "./dist/api-error.js",
+      "default": "./dist/api-error.js"
     }
   },
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "files": [
     "dist",
     "README.md",
