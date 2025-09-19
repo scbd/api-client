@@ -1,2 +1,4 @@
-export { default as ApiBase } from "./api-base";
-export { default as ApiError } from "./api-error";
+// example api client (remove once we have more examples below)
+export { default as PokemonApi } from './clients/pokemon.js';
+
+// other api clients here
