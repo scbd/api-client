@@ -5,7 +5,7 @@ type ThreeLetterKey = `${Letter}${Letter}${Letter}`
 type ValidKey = TwoLetterKey | ThreeLetterKey
 
 type lstring = {
-  [K in ValidKey]?: string
+  [K in ValidKey]: string
 }
 
 export default lstring;
