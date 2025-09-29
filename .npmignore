@@ -1,0 +1,62 @@
+# Source files
+src/
+*.ts
+!*.d.ts
+
+# Tests
+test/
+tests/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Configuration files
+.eslintrc*
+.prettierrc*
+.editorconfig
+tsconfig.json
+vitest.config.*
+jest.config.*
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentation (except README)
+docs/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Logs
+logs/
+*.log
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Build artifacts
+*.tsbuildinfo
+
+# Environment files
+.env*
+!.env.example
+
+# Package manager files
+node_modules/
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
