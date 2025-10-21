@@ -8,4 +8,4 @@ type lstring = {
   [locale in ValidKey]?: string
 }
 
-export default lstring;
+export default lstring

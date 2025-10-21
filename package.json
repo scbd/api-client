@@ -20,7 +20,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "ts-standard && tsc",
+    "build": "rm -rf dist && ts-standard && tsc",
     "dev": "nodemon --watch src --ext ts --exec \"ts-standard --fix src/**/*.ts\"",
     "lint": "ts-standard",
     "lint:fix": "ts-standard --fix",
