@@ -1,4 +1,4 @@
-// example api client (remove once we have more examples below)
-export { default as PokemonApi } from './clients/pokemon.js';
+// export shared types 
+export type { default as LString } from './types/lstring.js';
 
-// other api clients here
+// export api clients
