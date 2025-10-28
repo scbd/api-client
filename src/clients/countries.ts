@@ -1,7 +1,7 @@
 import ApiBase from '../api-base';
 import { handleError } from "../api-error"
-import type MongoQueryOptions from '../types/mongo-query';
-import { toMongoQuery } from '../utils/mongo-query';
+import type MongoFilters from '../types/mongo-filters';
+import { toMongoQuery } from '../utils/mongo-filters';
 
 export default class CountriesApi extends ApiBase {
   constructor(opts: { token: string, baseURL: string }) {
@@ -14,9 +14,9 @@ export default class CountriesApi extends ApiBase {
     })
   }
 
-  async getCountries(options: MongoQueryOptions & any = {}) {
-    const { query, projection, sort, skip, limit, count, firstOne, aggregation, ...rest } = options;
-    let mongoQuery = toMongoQuery({ query, projection, sort, skip, limit, count, firstOne, aggregation });
+  async getCountries(options: MongoFilters & any = {}) {
+    const { query, project, sort, skip, limit, count, firstOne, aggregate, ...rest } = options;
+    const mongoQuery = toMongoQuery({ query, project, sort, skip, limit, count, firstOne, aggregate });
 
     return this.fetch('/api/v2013/countries', { query: mongoQuery, ...rest });
   }
