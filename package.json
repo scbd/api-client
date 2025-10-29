@@ -25,7 +25,8 @@
     "lint:fix": "eslint . --fix",
     "prepack": "tsc",
     "prepare": "tsc",
-    "test": "vitest"
+    "test": "vitest",
+    "clean-reinstall": "rm -rf node_modules && yarn install" 
   },
   "keywords": [
     "utility",
