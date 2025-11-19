@@ -33,7 +33,7 @@ export default class ApiError extends Error {
     this.statusCode = _statusCode;
     this.cause = cause;
     this.message = message || getDefaultMessage(_statusCode) || startCase(_code);
-    this.fields = (field && [field]) || [];
+    this.fields = (field && Array.isArray(field) && field) || (field && [field]) || [];
   }
 
   toJSON() {
@@ -50,12 +50,13 @@ export function handleError({ response, error }: FetchContext & { response?: Fet
   let field;
 
   const contentType = response?.headers.get("content-type");
+  console.log("handleError", { response, error, contentType });
 
-  if (contentType == "application/json") {
+  if (contentType?.startsWith("application/json")) {
     const data = response?._data;
     statusCode = data.statusCode || statusCode;
     code = data.code || code;
-    field = data.field;
+    field = data.field || data.fields;
     message = data.message || data.Message;
   }
   else if (contentType?.startsWith("text")) {
