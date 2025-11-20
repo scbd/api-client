@@ -13,7 +13,7 @@ export default class TemporaryFilesApi extends ApiBase {
     this.#token = token;
   }
 
-  async upload(file: File) {
+  async upload(file: File, metadata?: any) {
     const contentType = getMimeType(file);
     const filename = file.name;
 
@@ -24,6 +24,7 @@ export default class TemporaryFilesApi extends ApiBase {
       body: {
         filename,
         contentType,
+        ...metadata,
       },
       headers: { Authorization: `${this.#token}` },
     });
