@@ -4,16 +4,16 @@ import { handleError } from "../api-error";
 export default class TemporaryFilesApi extends ApiBase {
   #token: string;
 
-  constructor(opts: { token: string, baseURL: string }) {
+  constructor({ token, baseURL }: { token: string, baseURL: string }) {
     super({
       onResponseError: handleError,
-      ...opts
+      baseURL,
     });
 
-    this.#token = opts.token;
+    this.#token = token;
   }
 
-  async upload(file: File, options: any = {}) {
+  async upload(file: File) {
     const contentType = getMimeType(file);
     const filename = file.name;
 
@@ -26,7 +26,6 @@ export default class TemporaryFilesApi extends ApiBase {
         contentType,
       },
       headers: { Authorization: `${this.#token}` },
-      ...options,
     });
 
     // step 2: upload to the url
@@ -34,18 +33,16 @@ export default class TemporaryFilesApi extends ApiBase {
     await this.fetch(prepareRes.url, {
       method: "PUT",
       body: file,
-      ...options,
     });
 
     // step 3: get the file data
 
-    return this.get(prepareRes.uid, options);
+    return this.get(prepareRes.uid);
   }
 
-  async get(uid: string, options: any = {}) {
+  async get(uid: string) {
     return this.fetch(`/api/v2015/temporary-files/${encodeURIComponent(uid)}`, {
       headers: { Authorization: `${this.#token}` },
-      ...options
     });
   }
 }
