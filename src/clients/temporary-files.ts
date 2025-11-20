@@ -48,7 +48,7 @@ export default class TemporaryFilesApi extends ApiBase {
   }
 }
 
-function getMimeType(file: File) {
+export function getMimeType(file: File) {
   const filename = file.name
   const sMimeType = file.type || "application/octet-stream";
 
