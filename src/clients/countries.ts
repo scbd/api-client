@@ -4,25 +4,24 @@ import type MongoFilters from '../types/mongo-filters';
 import { toMongoQuery } from '../utils/mongo-filters';
 
 export default class CountriesApi extends ApiBase {
-  constructor(opts: { token: string, baseURL: string }) {
+  constructor({ token, baseURL }: { token: string, baseURL: string }) {
     super({
       onRequest: ({ options }: { request: any, options: any }) => {
-        options.headers = { "Authorization": `${opts.token}` }
+        options.headers = { "Authorization": `${token}` }
       },
       onResponseError: handleError, 
-      ...opts
+      baseURL,
     })
   }
 
   async getCountries(options: MongoFilters & any = {}) {
-    const { query, project, sort, skip, limit, count, firstOne, aggregate, ...rest } = options;
+    const { query, project, sort, skip, limit, count, firstOne, aggregate } = options;
     const mongoQuery = toMongoQuery({ query, project, sort, skip, limit, count, firstOne, aggregate });
 
-    return this.fetch('/api/v2013/countries', { query: mongoQuery, ...rest });
+    return this.fetch('/api/v2013/countries', { query: mongoQuery });
   }
 
-  async getCountry(code: string, options: any = {}) {
-
-    return this.fetch(`/api/v2013/countries/${encodeURIComponent(code)}`, options);
+  async getCountry(code: string) {
+    return this.fetch(`/api/v2013/countries/${encodeURIComponent(code)}`);
   }  
 }
