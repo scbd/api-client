@@ -50,7 +50,6 @@ export function handleError({ response, error }: FetchContext & { response?: Fet
   let field;
 
   const contentType = response?.headers.get("content-type");
-  console.log("handleError", { response, error, contentType });
 
   if (contentType?.startsWith("application/json")) {
     const data = response?._data;

@@ -2,14 +2,15 @@ import ApiBase from "../api-base";
 import { handleError } from "../api-error";
 
 export default class TemporaryFilesApi extends ApiBase {
+  #token: string;
+
   constructor(opts: { token: string, baseURL: string }) {
     super({
-      onRequest: ({ options }: { request: any, options: any }) => {
-        options.headers = { Authorization: `${opts.token}` }
-      },
-      onResponseError: handleError, 
+      onResponseError: handleError,
       ...opts
-    })
+    });
+
+    this.#token = opts.token;
   }
 
   async upload(file: File, options: any = {}) {
@@ -24,22 +25,15 @@ export default class TemporaryFilesApi extends ApiBase {
         filename,
         contentType,
       },
+      headers: { Authorization: `${this.#token}` },
       ...options,
     });
-
-    if (!prepareRes.url) throw new Error(`field missing from response: url`);
-    
-    if (!prepareRes.uid) throw new Error(`field missing from response: uid`);
 
     // step 2: upload to the url
 
     await this.fetch(prepareRes.url, {
       method: "PUT",
       body: file,
-      // overwrite so that we don't provide auth token
-      onRequest: ({ options }: { request: any, options: any }) => {
-        options.headers = { contentType }
-      },
       ...options,
     });
 
@@ -49,7 +43,10 @@ export default class TemporaryFilesApi extends ApiBase {
   }
 
   async get(uid: string, options: any = {}) {
-    return this.fetch(`/api/v2015/temporary-files/${encodeURIComponent(uid)}`, options);
+    return this.fetch(`/api/v2015/temporary-files/${encodeURIComponent(uid)}`, {
+      headers: { Authorization: `${this.#token}` },
+      ...options
+    });
   }
 }
 
