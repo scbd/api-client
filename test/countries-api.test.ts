@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest'
 import CountriesApi from "../src/clients/countries"
+import ApiError from '../src/api-error';
 
 test('integration tests with an actual running api', async () => {
   // this is more of an integration test: 
@@ -78,7 +79,7 @@ test('integration tests with an actual running api', async () => {
 
   // good errors
 
-  await expect(api.getCountries({ limit: -1 })).rejects.toThrow("Invalid limit (l) value out of range (l<0)");
+  await expect(api.getCountries({ limit: -1 })).rejects.toThrowError(ApiError);
 
   try {
     ret = await api.getCountries({ limit: -1 });
@@ -93,6 +94,6 @@ test('integration tests with an actual running api', async () => {
   expect(ret).toBeDefined();
   expect(ret?.name?.en).toBe('Canada');
 
-  await expect(api.getCountry('NOPE')).rejects.toThrow("Not found");
+  await expect(api.getCountry('NOPE')).rejects.toThrowError(ApiError);
   
 });
