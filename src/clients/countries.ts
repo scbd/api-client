@@ -1,5 +1,6 @@
 import ApiBase from '../api-base';
 import { handleError } from "../api-error"
+import Country from '../types/country';
 import type MongoFilters from '../types/mongo-filters';
 import { toMongoQuery } from '../utils/mongo-filters';
 
@@ -14,14 +15,14 @@ export default class CountriesApi extends ApiBase {
     })
   }
 
-  async getCountries(options: MongoFilters & any = {}) {
+  async getCountries(options: MongoFilters = {}): Promise<Country[] & { count: number }> {
     const { query, project, sort, skip, limit, count, firstOne, aggregate } = options;
     const mongoQuery = toMongoQuery({ query, project, sort, skip, limit, count, firstOne, aggregate });
 
     return this.fetch('/api/v2013/countries', { query: mongoQuery });
   }
 
-  async getCountry(code: string) {
+  async getCountry(code: string): Promise<Country | undefined> {
     return this.fetch(`/api/v2013/countries/${encodeURIComponent(code)}`);
   }  
 }
