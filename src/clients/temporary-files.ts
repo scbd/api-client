@@ -1,5 +1,6 @@
 import ApiBase from "../api-base";
 import { handleError } from "../api-error";
+import TemporaryFile from "../types/temporary-file";
 
 export default class TemporaryFilesApi extends ApiBase {
   #token: string;
@@ -13,7 +14,7 @@ export default class TemporaryFilesApi extends ApiBase {
     this.#token = token;
   }
 
-  async upload(file: File, metadata?: any) {
+  async upload(file: File, metadata?: any): Promise<TemporaryFile> {
     const contentType = getMimeType(file);
     const filename = file.name;
 
@@ -41,13 +42,14 @@ export default class TemporaryFilesApi extends ApiBase {
     return this.get(prepareRes.uid);
   }
 
-  async get(uid: string) {
+  async get(uid: string): Promise<TemporaryFile> {
     return this.fetch(`/api/v2015/temporary-files/${encodeURIComponent(uid)}`, {
       headers: { Authorization: `${this.#token}` },
     });
   }
 }
 
+// note: exported only for testability
 export function getMimeType(file: File) {
   const filename = file.name
   const sMimeType = file.type || "application/octet-stream";

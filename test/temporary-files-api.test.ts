@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest'
 import TemporaryFilesApi, { getMimeType } from "../src/clients/temporary-files"
+import ApiError from '../src/api-error';
 
 const createFile = (fileName: string, content: string, fileType?: string) => {
   const blob = new Blob([content], { type: fileType });
@@ -52,31 +53,35 @@ test('integration tests with an actual running api', async () => {
 
   file = createFile("foobar.json", `{" foo": "BAR" }`, 'application/json');
 
-  expect(api.get('BADFORMAT')).rejects.toThrow("Id format is invalid"); // maybe should be Bad Request?
-  expect(api.upload(file)).rejects.toThrow("authorization_required");
+  await expect(api.get('BADFORMAT')).rejects.toThrowError(ApiError); // bad request
+  await expect(api.get("0123456789abcdef0123456789abcdef")).rejects.toThrowError(ApiError); // not found
+  await expect(api.upload(file)).rejects.toThrowError(ApiError); // auth
 
   // NOTE: grab a fresh token
-  token = "Bearer 0ABA909B334BA8A10407D551A538020AF73B23A1F3A747E416B336B94F085FD9D43AE2BAF07601D83A583469940CAD1EFACE18C87BF00469A0D3C8D759F875390290BEF9D18D5841BA1BD0F94168B46014D7F9693FA06E03C7DD43539E5EAAE0981F25AB49D36D4DBB9AA5A0D12C8AF04E24A32FFB7E7EF532E1EC235AEE5D88BB7DFDA394F24D97CF49A54D96B60553FB86AD19E0BB622CEDCCDB443E065AE8CF82E9897789D6B7249676DCBE9F18E7";
+  token = "Bearer REAL_TOKEN_HERE";
   api = new TemporaryFilesApi({ token, baseURL });
 
   ret = await api.upload(file);
+  console.log("upload json file", { file, ret });
   expect(ret).toBeDefined();
-  expect(ret.uid).toBeDefined();
-  expect(ret.url).toBeDefined();
-  expect(ret.url).toMatch(/https?:\/\//);
+  expect(ret?.uid).toBeDefined();
+  expect(ret?.url).toBeDefined();
+  expect(ret?.url).toMatch(/https?:\/\//);
 
   file = createFile("foobar.xml", "<foo><bar /></foo>", "text/xml")
   ret = await api.upload(file, { foo: "BAR" });
+  console.log("upload xml file", { file, ret });
   expect(ret).toBeDefined();
-  expect(ret.uid).toBeDefined();
-  expect(ret.url).toBeDefined();
-  expect(ret.url).toMatch(/https?:\/\//);
-  expect(ret.metadata.foo).toBe("BAR");
+  expect(ret?.uid).toBeDefined();
+  expect(ret?.url).toBeDefined();
+  expect(ret?.url).toMatch(/https?:\/\//);
+  expect(ret?.metadata?.foo).toBe("BAR");
 
-  ret = await api.get(ret.uid);
+  ret = await api.get(ret?.uid);
+  console.log("get xml file", { file, ret });
   expect(ret).toBeDefined();
-  expect(ret.uid).toBeDefined();
-  expect(ret.url).toBeDefined();
-  expect(ret.url).toMatch(/https?:\/\//);
-  expect(ret.metadata.foo).toBe("BAR");
+  expect(ret?.uid).toBeDefined();
+  expect(ret?.url).toBeDefined();
+  expect(ret?.url).toMatch(/https?:\/\//);
+  expect(ret?.metadata?.foo).toBe("BAR");
 });
