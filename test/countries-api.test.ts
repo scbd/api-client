@@ -1,7 +1,6 @@
 import { expect, test } from 'vitest'
-import ApiBase from "../src/api-base"
-import { handleError } from "../src/api-error"
 import CountriesApi from "../src/clients/countries"
+import ApiError from '../src/api-error';
 
 test('integration tests with an actual running api', async () => {
   // this is more of an integration test: 
@@ -46,7 +45,7 @@ test('integration tests with an actual running api', async () => {
   expect(ret).toBeDefined();
   expect(ret.length).toBe(3);
 
-  ret = await api.getCountries({ limit: 3, count: true });
+  ret = await api.getCountries({ limit: 3, count: 1 });
   console.log("3 countries count", ret.length);
   expect(ret).toBeDefined();
   expect(ret.count).toBe(3);
@@ -80,8 +79,8 @@ test('integration tests with an actual running api', async () => {
 
   // good errors
 
-  expect(api.getCountries({ limit: -1 })).rejects.toThrow("Bad Request");
-  
+  await expect(api.getCountries({ limit: -1 })).rejects.toThrowError(ApiError);
+
   try {
     ret = await api.getCountries({ limit: -1 });
   } catch (error) {
@@ -89,11 +88,12 @@ test('integration tests with an actual running api', async () => {
   }
 
   // getCountry
-    
+
   ret = await api.getCountry('CA')
   console.log("country", ret);
   expect(ret).toBeDefined();
-  expect(ret.name.en).toBe('Canada');
+  expect(ret?.name?.en).toBe('Canada');
 
-  expect(api.getCountry('NOPE')).rejects.toThrow("Not Found");
+  await expect(api.getCountry('NOPE')).rejects.toThrowError(ApiError);
+  
 });
